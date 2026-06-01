@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS Clicks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Sour+Gummy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --text-color: #222222;
+            --bg-base: #f9f6f0;
+            --orb-1: #ffe699;
+            --orb-2: #ffd24d;
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --glass-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+        }
+
+        body.dark-mode {
+            --text-color: #f5f5f5;
+            --bg-base: #0d0d0d;
+            --orb-1: #3a3000;
+            --orb-2: #1f1a00;
+            --glass-bg: linear-gradient(135deg, rgba(30, 30, 30, 0.7), rgba(15, 15, 15, 0.3));
+            --glass-border: rgba(212, 175, 55, 0.25);
+            --glass-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(212, 175, 55, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            transition: color 0.3s, background 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Sour Gummy', cursive;
+            color: var(--gold);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Modern Visible Liquid Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .liquid-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.6;
+            mix-blend-mode: multiply;
+            animation: floatAnimation 12s infinite alternate ease-in-out;
+        }
+
+        body.dark-mode .liquid-orb {
+            mix-blend-mode: screen;
+            opacity: 0.4;
+            filter: blur(80px);
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--orb-1);
+            top: -10%;
+            left: -10%;
+            animation-duration: 14s;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: var(--orb-2);
+            bottom: -20%;
+            right: -10%;
+            animation-duration: 18s;
+            animation-delay: -2s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: var(--gold);
+            top: 40%;
+            left: 50%;
+            opacity: 0.25;
+            animation-duration: 16s;
+            animation-delay: -4s;
+        }
+
+        @keyframes floatAnimation {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 50%; }
+            50% { transform: translate(60px, 40px) scale(1.1) rotate(90deg); border-radius: 40% 60% 50% 50%; }
+            100% { transform: translate(-40px, 80px) scale(0.9) rotate(180deg); border-radius: 60% 40% 60% 40%; }
+        }
+
+        /* Apple iOS Liquid Glass Style Base */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 24px;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            position: sticky;
+            top: 15px;
+            z-index: 100;
+            margin: 0 20px;
+        }
+
+        .logo-container img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+        .logo-container img:hover { transform: scale(1.05); }
+
+        /* Theme Toggle Switch */
+        .theme-switch-wrapper { display: flex; align-items: center; }
+        .theme-switch { display: inline-block; height: 34px; position: relative; width: 60px; }
+        .theme-switch input { display: none; }
+        .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 34px; }
+        .slider:before { background-color: #fff; bottom: 4px; content: ""; height: 26px; left: 4px; position: absolute; transition: .4s; width: 26px; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: var(--gold); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 40px 5%;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            align-items: center;
+        }
+
+        section {
+            width: 100%;
+            max-width: 1050px;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        /* Hero / Title & Business Card below */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        .hero h1 { font-size: 3.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .b-card {
+            max-width: 100%;
+            width: 550px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s;
+            cursor: pointer;
+        }
+        .b-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(212, 175, 55, 0.25);
+        }
+
+        /* Typography */
+        h2 { font-size: 2.5rem; margin-bottom: 25px; position: relative; display: inline-block; }
+        h2::after { content: ''; display: block; width: 50%; height: 3px; background: var(--gold); margin: 8px auto 0; border-radius: 2px; }
+        p { font-size: 1.15rem; line-height: 1.7; margin-bottom: 35px; opacity: 0.9; }
+
+        /* iOS Fluid Buttons */
+        .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .btn {
+            display: inline-block;
+            padding: 14px 30px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05), inset 0 1px 2px rgba(255,255,255,0.5);
+        }
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px var(--gold-glow);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* Services iOS Liquid Glass Cards */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .service-card {
+            padding: 35px 25px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Gloss reflection effect */
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0));
+            pointer-events: none;
+        }
+        .service-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15), 0 0 20px var(--gold-glow);
+        }
+        .service-card .card-art {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        .service-card h3 {
+            font-size: 1.4rem;
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+        }
+        .service-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 0;
+            opacity: 0.8;
+        }
+
+        /* Contact Section & Logo Buttons */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .social-btn i {
+            font-size: 1.6rem;
+            transition: transform 0.3s;
+        }
+        
+        /* Individual hover styles preserving brand logos */
+        .social-btn.whatsapp i { color: #25D366; }
+        .social-btn.facebook i { color: #1877F2; }
+        .social-btn.telegram i { color: #26A5E4; }
+        .social-btn.email i { color: #EA4335; }
+
+        .social-btn:hover {
+            transform: translateY(-6px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12), 0 0 15px var(--gold-glow);
+        }
+        .social-btn:hover i {
+            transform: scale(1.15);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: auto;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            section { padding: 35px 20px; }
+            h2 { font-size: 2rem; }
+            .hero h1 { font-size: 2.8rem; }
+            .b-card { width: 100%; }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <div class="bg-animation">
+        <div class="liquid-orb orb-1"></div>
+        <div class="liquid-orb orb-2"></div>
+        <div class="liquid-orb orb-3"></div>
+    </div>
+
+    <nav class="glass">
+        <div class="logo-container">
+            <img id="site-logo" src="light.png" alt="MS Clicks Logo">
+        </div>
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox" />
+                <div class="slider"></div>
+            </label>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero glass" id="home">
+            <h1>MS clicks</h1>
+            <img src="1.png" alt="MS Clicks Business Card" class="b-card">
+        </section>
+
+        <section class="glass" id="about">
+            <h2>About Us</h2>
+            <p>Welcome to MS Clicks. We are a premier digital creating business dedicated to bringing your ideas to life. With a passion for creativity and an eye for modern design, we deliver top-notch digital solutions tailored to your unique needs.</p>
+            <div class="btn-group">
+                <a href="https://store.msclicks.tech/" target="_blank" class="btn glass">Visit Our Shop</a>
+                <a href="https://subz.msclicks.tech/" target="_blank" class="btn glass">Translate Subtitles to Sinhala</a>
+            </div>
+        </section>
+
+        <section class="glass" id="services">
+            <h2>Our Services</h2>
+            <div class="services-grid">
+                
+                <div class="service-card glass">
+                    <span class="card-art">🎨</span>
+                    <h3>Graphic Design</h3>
+                    <p>Stunning visual content, templates, and high-quality artistic graphics customized for your brand.</p>
+                </div>
+                
+                <div class="service-card glass">
+                    <span class="card-art">📄</span>
+                    <h3>Typesetting</h3>
+                    <p>Accurate and professionally formatted documents with clean typography layouts.</p>
+                </div>
+                
+                <div class="service-card glass">
+                    <span class="card-art">📱</span>
+                    <h3>FB Post Design</h3>
+                    <p>Highly engaging and creative social media posts crafted to boost your online presence.</p>
+                </div>
+                
+                <div class="service-card glass">
+                    <span class="card-art">💼</span>
+                    <h3>CV Creating</h3>
+                    <p>Modern, professional CV designs tailored to grab employers' attention and land jobs.</p>
+                </div>
+                
+                <div class="service-card glass">
+                    <span class="card-art">📚</span>
+                    <h3>Tutes and Papers</h3>
+                    <p>Perfectly structured academic tutorials, test papers, and educational booklets creation.</p>
+                </div>
+                
+                <div class="service-card glass">
+                    <span class="card-art">✒️</span>
+                    <h3>Logos</h3>
+                    <p>Unique, iconic, and memorable logo concepts that represent your true brand identity.</p>
+                </div>
+                
+                <div class="service-card glass">
+                    <span class="card-art">📢</span>
+                    <h3>Fliers Design</h3>
+                    <p>Eye-catching promotional fliers and digital leaflets to market your products effectively.</p>
+                </div>
+                
+                <div class="service-card glass">
+                    <span class="card-art">🚀</span>
+                    <h3>Social Media Ad Making</h3>
+                    <p>High-converting advertisement designs for Facebook, Instagram, and digital campaigns.</p>
+                </div>
+                
+                <div class="service-card glass">
+                    <span class="card-art">📝</span>
+                    <h3>Assignments</h3>
+                    <p>Well-organized, neatly typed, and cleanly presented academic assignment styling assistance.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="glass" id="contact">
+            <h2>Contact Us</h2>
+            <div class="social-links">
+                <a href="https://wa.me/94742317018" target="_blank" class="social-btn glass whatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="https://www.facebook.com/share/1YFJTyA6HB/" target="_blank" class="social-btn glass facebook">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </a>
+                <a href="https://t.me/maleesha0411" target="_blank" class="social-btn glass telegram">
+                    <i class="fab fa-telegram-plane"></i> Telegram
+                </a>
+                <a href="mailto:msclicks.lk@gmail.com" target="_blank" class="social-btn glass email">
+                    <i class="fas fa-envelope"></i> Email
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; msclicks 2026 all right reserved.</p>
+    </footer>
+
+    <script>
+        const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+        const currentTheme = localStorage.getItem('theme');
+        const siteLogo = document.getElementById('site-logo');
+
+        if (currentTheme) {
+            document.body.classList.add(currentTheme);
+            if (currentTheme === 'dark-mode') {
+                toggleSwitch.checked = true;
+                siteLogo.src = 'dark.png';
+            } else {
+                siteLogo.src = 'light.png';
+            }
+        }
+
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.body.classList.replace('light-mode', 'dark-mode');
+                if(!document.body.classList.contains('dark-mode')) {
+                    document.body.classList.add('dark-mode');
+                }
+                localStorage.setItem('theme', 'dark-mode');
+                siteLogo.src = 'dark.png';
+            } else {
+                document.body.classList.replace('dark-mode', 'light-mode');
+                if(!document.body.classList.contains('light-mode')) {
+                    document.body.classList.add('light-mode');
+                }
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light-mode');
+                siteLogo.src = 'light.png';
+            }
+        }
+
+        toggleSwitch.addEventListener('change', switchTheme, false);
+    </script>
+</body>
+</html>
