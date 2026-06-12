@@ -419,8 +419,13 @@ const AntigravityBG = (() => {
     Array.from(containerEl.children).forEach(child => {
       if (child === canvas) return;
       const cp = getComputedStyle(child).position;
-      if (cp === 'static') child.style.position = 'relative';
-      if (!child.style.zIndex) child.style.zIndex = '1';
+      // Only force relative on static elements — never override fixed/absolute/sticky
+      if (cp === 'static') {
+        child.style.position = 'relative';
+      }
+      if (!child.style.zIndex && cp === 'static') {
+        child.style.zIndex = '1';
+      }
     });
 
     buildGrid();
